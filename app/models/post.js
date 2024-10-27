@@ -1,6 +1,9 @@
 const db = require("@db/mysql");
 
 exports.findAll = async () => {
-  const [rows, fields] = await db.query("SELECT * FROM posts");
+  const [rows, fields] = await db.query(`
+    SELECT p.*,u.full_name
+    FROM posts p
+    JOIN users u ON p.author_id = u.id`);
   return rows;
 };

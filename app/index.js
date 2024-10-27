@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const stats = require("@models/statistics");
 const post = require("@models/post");
+const { toPersianDate } = require("./services/dataService");
 require("./boot/index")(app);
 
 app.get("/", (req, res) => {
@@ -26,7 +27,12 @@ app.get("/stats", async (req, res) => {
 app.get("/list-posts", async (req, res) => {
   const posts = await post.findAll();
   console.log(posts);
-  res.status(200).json(posts);
+  // Add Persian date to each post
+  const postsWithPersianDate = posts.map((post) => ({
+    ...post,
+    persian_date: toPersianDate(post.created_at),
+  }));
+  res.status(200).json(postsWithPersianDate);
 });
 
 const run = () => {
